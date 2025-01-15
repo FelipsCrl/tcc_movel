@@ -79,7 +79,7 @@ class _HabilidadeState extends State<Habilidade> {
       }
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Escolha ao menos uma habilidade!'),backgroundColor: Colors.green,),
+        SnackBar(content: Text('Escolha ao menos uma habilidade!'),backgroundColor: Colors.grey,),
       );
     }
   }

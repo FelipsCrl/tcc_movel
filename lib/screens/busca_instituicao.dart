@@ -35,6 +35,7 @@ class _BuscaState extends State<Busca> {
         ),
       );
       setState(() {
+        print(response.data['data']);
         _instituicoes = response.data['data'];
         _isLoading = false;
       });
@@ -209,10 +210,21 @@ class _BuscaState extends State<Busca> {
                           children: [
                             CircleAvatar(
                               backgroundColor: Colors.lightBlueAccent,
-                              child: Image.asset(
-                                'img/user.png',
-                                fit: BoxFit.contain,
-                              ),
+                              radius: 20, // Define o tamanho do CircleAvatar
+                              child: instituicao['profile_photo_url'] != null &&
+                                  instituicao['profile_photo_url'].isNotEmpty
+                                  ? ClipOval(
+                                child: Image.network(
+                                  instituicao['profile_photo_url'],
+                                  width: 40, // Dobre o valor do raio para garantir que preencha
+                                  height: 40,
+                                  fit: BoxFit.cover, // Garante que a imagem preencha o círculo
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(Icons.account_circle, size: 20, color: Colors.white);
+                                  },
+                                ),
+                              )
+                                  : const Icon(Icons.account_circle, size: 20, color: Colors.white),
                             ),
                             Container(
                               margin: const EdgeInsets.only(left: 10),

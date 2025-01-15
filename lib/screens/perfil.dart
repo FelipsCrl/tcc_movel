@@ -452,13 +452,24 @@ class _PerfilState extends State<Perfil> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CircleAvatar(
-                        radius: 65.0,
-                        backgroundColor: Colors.white,
-                        child: Image.asset(
-                          'img/user.png',
-                          color: Colors.black,
-                        ),
+                        backgroundColor: Colors.lightBlueAccent,
+                        radius: 60, // Define o tamanho do CircleAvatar
+                        child: _dadosVoluntario[0]['usuario']['profile_photo_url'] != null &&
+                            _dadosVoluntario[0]['usuario']['profile_photo_url'].isNotEmpty
+                            ? ClipOval(
+                          child: Image.network(
+                            _dadosVoluntario[0]['usuario']['profile_photo_url'],
+                            width: 120, // Dobre o valor do raio para garantir que preencha
+                            height: 120,
+                            fit: BoxFit.cover, // Garante que a imagem preencha o círculo
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.account_circle, size: 120, color: Colors.white);
+                            },
+                          ),
+                        )
+                            : const Icon(Icons.account_circle, size: 120, color: Colors.white),
                       ),
+                      SizedBox(height: 15,),
                       Text(
                         _dadosVoluntario[0]['usuario']['name'],
                         style: const TextStyle(
@@ -765,7 +776,40 @@ class _PerfilState extends State<Perfil> {
       child: Container(
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(color: Colors.white),
-        child: ListView.builder(
+        child: solicitacoes.isEmpty
+            ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.info_outline,
+                size: 64.0,
+                color: Colors.grey,
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                "Nenhuma solicitação encontrada",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey,
+                  fontFamily: 'Rubik',
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              const Text(
+                "Faça sua primeira solicitação para começar!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.grey,
+                  fontFamily: 'Rubik',
+                ),
+              ),
+            ],
+          ),
+        )
+            : ListView.builder(
           itemCount: solicitacoes.length,
           itemBuilder: (context, index) {
             final solicitacao = solicitacoes[index] as Map<String, dynamic>;

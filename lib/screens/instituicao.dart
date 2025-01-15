@@ -379,10 +379,24 @@ class _InstituicaoState extends State<Instituicao> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 65.0,
-                      backgroundColor: Colors.white,
-                      child: Image.asset('img/user.png',color: Colors.black,),
+                      backgroundColor: Colors.lightBlueAccent,
+                      radius: 60, // Define o tamanho do CircleAvatar
+                      child: instituicao['profile_photo_url'] != null &&
+                          instituicao['profile_photo_url'].isNotEmpty
+                          ? ClipOval(
+                        child: Image.network(
+                          instituicao['profile_photo_url'],
+                          width: 120, // Dobre o valor do raio para garantir que preencha
+                          height: 120,
+                          fit: BoxFit.cover, // Garante que a imagem preencha o círculo
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.account_circle, size: 120, color: Colors.white);
+                          },
+                        ),
+                      )
+                          : const Icon(Icons.account_circle, size: 120, color: Colors.white),
                     ),
+                    SizedBox(height: 15,),
                     Text(instituicao['nome'],
                       style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white,fontFamily: 'Rubik', fontSize: 20),),
                   ],
@@ -459,17 +473,18 @@ class _InstituicaoState extends State<Instituicao> {
                           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black,fontFamily: 'Rubik', fontSize: 19),
                           textAlign: TextAlign.left,
                         ),
-                        const SizedBox(height: 5),
-                        Container(
-                          padding: const EdgeInsets.only(left: 5, right: 5),
-                          alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(border: Border.all(color: Colors.grey,style: BorderStyle.solid),borderRadius: const BorderRadius.all(Radius.circular(15))),
-                          width: MediaQuery.of(context).size.width,
-                          child: Text(instituicao['descricao'],
-                            style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black,fontFamily: 'Open Sans', fontSize: 15,height: 1.5,),
-                            textAlign: TextAlign.justify,
+                        if(instituicao['descricao']?.isNotEmpty ?? false)
+                          const SizedBox(height: 5),
+                          Container(
+                            padding: const EdgeInsets.only(left: 5, right: 5),
+                            alignment: Alignment.centerLeft,
+                            decoration: BoxDecoration(border: Border.all(color: Colors.grey,style: BorderStyle.solid),borderRadius: const BorderRadius.all(Radius.circular(15))),
+                            width: MediaQuery.of(context).size.width,
+                            child: Text(instituicao['descricao'] ??'',
+                              style: TextStyle(fontWeight: FontWeight.normal, color: Colors.black,fontFamily: 'Open Sans', fontSize: 15,height: 1.5,),
+                              textAlign: TextAlign.justify,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -542,14 +557,14 @@ class _InstituicaoState extends State<Instituicao> {
                                       ),
                                       SizedBox(width: 5,),
                                       // Verifica se o WhatsApp está disponível
-                                      if (instituicao['whatsapp'] != null && instituicao['whatsapp'].isNotEmpty)
+                                      if (instituicao['whatsapp']?.isNotEmpty == true) // Verifica se o valor não é nulo e não está vazio
                                         Row(
                                           children: [
-                                            SizedBox(width: 10,),
-                                            Icon(Icons.phone_android_outlined, color: Colors.lightBlue,),
-                                            SizedBox(width: 10,),
+                                            SizedBox(width: 10),
+                                            Icon(Icons.phone_android_outlined, color: Colors.lightBlue),
+                                            SizedBox(width: 10),
                                             Text(
-                                              instituicao['whatsapp'],
+                                              instituicao['whatsapp'] ?? '', // Fornece um valor padrão vazio se for null
                                               style: TextStyle(
                                                 fontWeight: FontWeight.normal,
                                                 color: Colors.black,
@@ -619,11 +634,17 @@ class _InstituicaoState extends State<Instituicao> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if(instituicao['whatsapp']?.isNotEmpty == false &&
+                            instituicao['facebook']?.isNotEmpty == false &&
+                            instituicao['instagram']?.isNotEmpty == false)
                         const Text("Redes Sociais:",
                           style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black,fontFamily: 'Rubik', fontSize: 19),
                           textAlign: TextAlign.left,
                         ),
                         const SizedBox(height: 5,),
+                        if(instituicao['whatsapp']?.isNotEmpty == false &&
+                            instituicao['facebook']?.isNotEmpty == false &&
+                            instituicao['instagram']?.isNotEmpty == false)
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey, style: BorderStyle.solid),
@@ -633,7 +654,7 @@ class _InstituicaoState extends State<Instituicao> {
                             padding: const EdgeInsets.all(5),
                             child: Row(
                               children: [
-                                if (instituicao['whatsapp'] != null && instituicao['whatsapp'].isNotEmpty)
+                                if (instituicao['whatsapp']?.isNotEmpty == false)
                                   Expanded(
                                     child: IconButton(
                                       icon: const FaIcon(FontAwesomeIcons.whatsapp),
@@ -697,42 +718,67 @@ class _InstituicaoState extends State<Instituicao> {
                           textAlign: TextAlign.left,
                         ),
                         const SizedBox(height: 5,),
-                        Container(
-                            decoration: BoxDecoration(border: Border.all(color: Colors.grey,style: BorderStyle.solid),borderRadius: const BorderRadius.all(Radius.circular(15))),
-                            child: Container(
-                              padding: const EdgeInsets.all(5),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 10,),
-                                      Icon(Icons.factory_outlined, color: Colors.lightBlue,),
-                                      SizedBox(width: 10,),
-                                      Expanded(
+                        if(instituicao['whatsapp'] != null && instituicao['whatsapp'].isNotEmpty)
+                          Container(
+                              decoration: BoxDecoration(border: Border.all(color: Colors.grey,style: BorderStyle.solid),borderRadius: const BorderRadius.all(Radius.circular(15))),
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                child: Column(
+                                  children: [
+
+                                    Row(
+                                      children: [
+                                        SizedBox(width: 10,),
+                                        Icon(Icons.factory_outlined, color: Colors.lightBlue,),
+                                        SizedBox(width: 10,),
+
+                                        Expanded(
                                           child: MouseRegion(
                                             cursor: SystemMouseCursors.click, // Cursor de "mãozinha"
                                             child: GestureDetector(
-                                              onTap: () => _launchUrl(Uri.parse(instituicao['site']!)),
+                                              onTap: () => _launchUrl(Uri.parse(instituicao['site']! ?? '')),
                                               child: Text(
-                                                instituicao['site']!,
+                                                instituicao['site']! ?? '',
                                                 style: const TextStyle(
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Colors.blue, // Indica que é um link
-                                                  fontFamily: 'Rubik',
-                                                  fontSize: 14,
-                                                  decoration: TextDecoration.underline, // Estilo de link
-                                                  decorationColor: Colors.blue
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Colors.blue, // Indica que é um link
+                                                    fontFamily: 'Rubik',
+                                                    fontSize: 14,
+                                                    decoration: TextDecoration.underline, // Estilo de link
+                                                    decorationColor: Colors.blue
                                                 ),
                                               ),
                                             ),
                                           ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        ),
+                                        /**/
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                          ),
+                        if(instituicao['whatsapp'] == null)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 64.0,
+                                color: Colors.grey,
                               ),
-                            )
-                        )
+                              const SizedBox(height: 16.0),
+                              const Text(
+                                "Essa instituição não possui um site institucional!",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                  fontFamily: 'Rubik',
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),

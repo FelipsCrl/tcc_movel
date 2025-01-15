@@ -941,16 +941,27 @@ class _DoacaoState extends State<Doacao> {
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      child: Image.asset(
-                                        'img/user.png',
-                                        fit: BoxFit.contain,
-                                      ),
                                       backgroundColor: Colors.lightBlueAccent,
+                                      radius: 20, // Define o tamanho do CircleAvatar
+                                      child: doacao['instituicao']?['profile_photo_url'] != null &&
+                                          doacao['instituicao']?['profile_photo_url'].isNotEmpty
+                                          ? ClipOval(
+                                        child: Image.network(
+                                          doacao['instituicao']?['profile_photo_url'],
+                                          width: 40, // Dobre o valor do raio para garantir que preencha
+                                          height: 40,
+                                          fit: BoxFit.cover, // Garante que a imagem preencha o círculo
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return const Icon(Icons.account_circle, size: 20, color: Colors.white);
+                                          },
+                                        ),
+                                      )
+                                          : const Icon(Icons.account_circle, size: 20, color: Colors.white),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Text(
-                                        doacao['instituicao']?['nome'] ?? 'Sem Instituição',
+                                        doacao['instituicao']?['nome'],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           color: Color(0xed171718),

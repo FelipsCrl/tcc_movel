@@ -666,23 +666,31 @@ class _EventoState extends State<Evento> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5, bottom: 5, top: 15),
+                                padding: const EdgeInsets.only(left: 5, bottom: 5, top: 15),
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      child: Image.asset(
-                                        'img/user.png',
-                                        fit: BoxFit.contain,
-                                      ),
-                                      backgroundColor:
-                                      Colors.lightBlueAccent,
+                                      backgroundColor: Colors.lightBlueAccent,
+                                      radius: 20, // Define o tamanho do CircleAvatar
+                                      child: evento['instituicao']?['profile_photo_url'] != null &&
+                                          evento['instituicao']?['profile_photo_url'].isNotEmpty
+                                          ? ClipOval(
+                                        child: Image.network(
+                                          evento['instituicao']?['profile_photo_url'],
+                                          width: 40, // Dobre o valor do raio para garantir que preencha
+                                          height: 40,
+                                          fit: BoxFit.cover, // Garante que a imagem preencha o círculo
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return const Icon(Icons.account_circle, size: 20, color: Colors.white);
+                                          },
+                                        ),
+                                      )
+                                          : const Icon(Icons.account_circle, size: 20, color: Colors.white),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
                                       child: Text(
-                                        evento['instituicao']?['nome'] ??
-                                            'Sem instituição',
+                                        evento['instituicao']?['nome'] ?? 'Sem Instituição',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           color: Color(0xed171718),
@@ -753,20 +761,22 @@ class _EventoState extends State<Evento> {
   }
 
   bool voluntarioTemHabilidade(dynamic voluntario, String? opcaoHabilidade) {
-    // Verificar se o voluntário é um Map e possui a chave "habilidades"
+    if (voluntario is List) {
+      // Se voluntario for uma lista, verificar o primeiro elemento
+      voluntario = voluntario.isNotEmpty ? voluntario.first : null;
+    }
     if (voluntario is Map<String, dynamic>) {
       final habilidades = voluntario['habilidades'];
       if (habilidades is List<dynamic>) {
-        // Percorrer as habilidades e verificar se alguma corresponde a "opcaoHabilidade"
         for (var habilidade in habilidades) {
           if (habilidade is Map<String, dynamic> &&
               habilidade['descricao_habilidade'] == opcaoHabilidade) {
-            return true; // Habilidade encontrada
+            return true;
           }
         }
       }
     }
-    return false; // Habilidade não encontrada
+    return false;
   }
 
 }
