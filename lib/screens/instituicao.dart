@@ -725,13 +725,11 @@ class _InstituicaoState extends State<Instituicao> {
                                 padding: const EdgeInsets.all(5),
                                 child: Column(
                                   children: [
-
                                     Row(
                                       children: [
                                         SizedBox(width: 10,),
                                         Icon(Icons.factory_outlined, color: Colors.lightBlue,),
                                         SizedBox(width: 10,),
-
                                         Expanded(
                                           child: MouseRegion(
                                             cursor: SystemMouseCursors.click, // Cursor de "mãozinha"

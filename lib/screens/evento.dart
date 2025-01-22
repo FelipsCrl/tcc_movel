@@ -54,12 +54,14 @@ class _EventoState extends State<Evento> {
   Future<void> _inscreverEvento() async {
     if(validarVoluntarios(_voluntario) == false){
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Os dados do perfil não foram todos preenchidos!'),backgroundColor: Colors.red,),
+        const SnackBar(content: Text('Os dados do perfil não foram todos preenchidos!'),
+          backgroundColor: Colors.red,),
       );
     }
     else if(voluntarioTemHabilidade(_voluntario, _opcaoHabilidade) == false){
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Você não possui a habilidade selecionada!'),backgroundColor: Colors.red,),
+        const SnackBar(content: Text('Você não possui a habilidade selecionada!'),
+          backgroundColor: Colors.red,),
       );
     }
     else{
@@ -82,21 +84,19 @@ class _EventoState extends State<Evento> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(response.data['message']), backgroundColor: Colors.green,),
           );
-
           // Limpa as variáveis após a inscrição ser realizada
           setState(() {
             _opcaoHabilidade = null; // Limpa a habilidade selecionada
             idHabilidade = 0; // Limpa o ID da habilidade
             idEvento = 0; // Limpa o ID do evento
           });
-
           _listagemEventos();
         }
       } on DioException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Não foi possível realizar a inscrição no evento!'),backgroundColor: Colors.red,),
+          const SnackBar(content: Text('Não foi possível realizar a inscrição no evento!'),
+            backgroundColor: Colors.red,),
         );
-        print('Erro ao se inscrever em evento: $e');
       }
     }
   }
